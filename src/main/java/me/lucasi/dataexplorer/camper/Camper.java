@@ -55,10 +55,9 @@ public class Camper {
         return years;
     }
 
-    public int[] getDropOffYearAge() {
+    public String getDropOffAgeGroup() {
         String[] splitHistory = history.split(" ");
-        String lastCode = splitHistory[splitHistory.length - 2].replaceAll("[0-9]","");
-        return new int[]{};
+        return splitHistory[1].replaceAll("[0-9]","");
     }
 
     private boolean isInteger(String integer) {

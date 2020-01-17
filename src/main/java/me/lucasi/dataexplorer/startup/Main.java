@@ -139,8 +139,37 @@ public class Main {
     }
 
     private void dropOffAges() {
-        // Map<year, Map<age, dropped>>
-        // Map<year, Map<age, total>>
+
+        Map<Integer, Map<Integer, Integer>> amountDropped = new HashMap<>();
+
+        for (int year = 1989; year <= 2018; year++)
+            amountDropped.put(year, new HashMap<>());
+
+        for (Camper camper : camperManager.getCampers()) {
+            List<Integer> years = removeDuplicates(camper.getYearsInHistory());
+            if (years.size() >= 1) {
+                int lastYear = years.get(years.size() - 1);
+                if (lastYear != 2019) {
+                    int age = getAgeFromGroup(camper.getDropOffAgeGroup());
+                    if (age != 0) {
+                        Map<Integer, Integer> map = amountDropped.get(lastYear);
+                        if (map.containsKey(age))
+                            map.put(age, map.get(age) + 1);
+                        else
+                            map.put(age, 1);
+                    }
+                }
+            }
+        }
+
+        System.out.println("\nFormat: Age: Amount Dropped");
+
+        for (int year : amountDropped.keySet()) {
+            System.out.println(year + ":");
+            for (Map.Entry<Integer, Integer> entrySet : amountDropped.get(year).entrySet()) {
+                System.out.println("    " + entrySet.getKey() + ": " + entrySet.getValue());
+            }
+        }
 
     }
 
@@ -154,13 +183,13 @@ public class Main {
         return newList;
     }
 
-    public int[] getAgeFromGroup(String group) {
+    public int getAgeFromGroup(String group) {
         for (AgeTypes ageType : AgeTypes.values()) {
             if (ageType.name().equalsIgnoreCase(group)) {
                 return ageType.getAgeGroup();
             }
         }
-        return null;
+        return 0;
     }
 
     public static Main getInstance() {
